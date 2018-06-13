@@ -23,8 +23,21 @@ Page({
     nowWeather: ``,
     nowWeatherBackground: ``
   },
-
+  //页面加载时获取
   onLoad() {
+    this.getNow()
+  },
+  //向下拉刷新
+  onPullDownRefresh() {
+    this.getNow(() => {
+      wx.stopPullDownRefresh();
+      console.log('执行了');
+    })
+  },
+
+  //获取现在的天气
+  getNow(callback){
+    //发出请求
     wx.request({
       url: 'https://test-miniprogram.com/api/weather/now',
       data: {
@@ -48,7 +61,12 @@ Page({
           frontColor: '#000000',
           backgroundColor: weatherColorMap[weather],
         })
+      },
+      //接口调用结束的回调函数（成功、失败都会执行）
+      complete: () => {
+        //在callback不为空的情况下执行callback
+        callback && callback();
       }
     })
-  }
+  },
 })
